@@ -75,6 +75,48 @@
         </div>
       </div>
     </div>
+
+    <div class="card submitted-card">
+      <div class="card-header">
+        <h3 class="card-title">{{ t('orders.submittedOrders.title') }} ({{ restockOrders.length }})</h3>
+      </div>
+      <div v-if="restockError" class="error">{{ restockError }}</div>
+      <div v-else-if="restockLoading" class="loading">{{ t('common.loading') }}</div>
+      <div v-else-if="restockOrders.length === 0" class="empty-state">
+        {{ t('orders.submittedOrders.empty') }}
+        <router-link to="/restocking">{{ t('orders.submittedOrders.goToRestocking') }}</router-link>
+      </div>
+      <div v-else class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ t('orders.submittedOrders.table.orderNumber') }}</th>
+              <th>{{ t('orders.submittedOrders.table.submittedDate') }}</th>
+              <th>{{ t('orders.submittedOrders.table.items') }}</th>
+              <th>{{ t('orders.submittedOrders.table.totalCost') }}</th>
+              <th>{{ t('orders.submittedOrders.table.leadTime') }}</th>
+              <th>{{ t('orders.submittedOrders.table.expectedDelivery') }}</th>
+              <th>{{ t('orders.submittedOrders.table.status') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ro in restockOrders" :key="ro.id">
+              <td><strong>{{ ro.order_number }}</strong></td>
+              <td>{{ formatDate(ro.submitted_date) }}</td>
+              <td>
+                <div v-for="item in ro.items" :key="item.sku">{{ item.sku }} × {{ item.quantity }}</div>
+              </td>
+              <td><strong>{{ formatCurrency(ro.total_cost) }}</strong></td>
+              <td>{{ t('orders.submittedOrders.days', { count: ro.lead_time_days }) }}</td>
+              <td>{{ formatDate(ro.expected_delivery) }}</td>
+              <td>
+                <span class="badge info">{{ t(`status.${ro.status.toLowerCase()}`) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,6 +125,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrency as formatCurrencyUtil } from '../utils/currency'
 
 export default {
   name: 'Orders',
@@ -95,6 +138,9 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockOrders = ref([])
+    const restockLoading = ref(true)
+    const restockError = ref(null)
 
     // Use shared filters
     const {
@@ -144,22 +190,44 @@ export default {
     }
 
     const formatDate = (dateString) => {
+      const d = new Date(dateString)
+      if (!dateString || isNaN(d.getTime())) return '-'
       const { currentLocale } = useI18n()
       const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
-      return new Date(dateString).toLocaleDateString(locale, {
+      return d.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
       })
     }
 
-    onMounted(loadOrders)
+    const formatCurrency = (value) => formatCurrencyUtil(value, currentCurrency.value)
+
+    // Separate from loadOrders: not filter-driven, must not affect the main table or stats
+    const loadRestockOrders = async () => {
+      try {
+        restockOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        restockError.value = t('orders.submittedOrders.loadFailed') + ': ' + (err.response?.data?.detail || err.message)
+      } finally {
+        restockLoading.value = false
+      }
+    }
+
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockOrders,
+      restockLoading,
+      restockError,
+      formatCurrency,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -172,6 +240,21 @@ export default {
 </script>
 
 <style scoped>
+.submitted-card {
+  margin-top: 1.5rem;
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-dim);
+}
+
+.empty-state a {
+  margin-left: 0.5rem;
+  color: var(--color-accent);
+}
+
 /* Fixed table layout to prevent column shifting */
 .orders-table {
   table-layout: fixed;
@@ -210,7 +293,7 @@ export default {
 
 .items-summary {
   cursor: pointer;
-  color: #3b82f6;
+  color: var(--color-accent);
   font-weight: 500;
   list-style: none;
   user-select: none;
@@ -234,7 +317,7 @@ export default {
 }
 
 .items-summary:hover {
-  color: #2563eb;
+  color: var(--color-accent-hover);
   text-decoration: underline;
 }
 
@@ -245,7 +328,7 @@ export default {
   left: 0;
   margin-top: 0.5rem;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border-2);
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 0.75rem;
@@ -259,7 +342,7 @@ export default {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--color-border-2);
 }
 
 .item-entry:last-child {
@@ -269,11 +352,11 @@ export default {
 .item-name {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .item-meta {
   font-size: 0.813rem;
-  color: #64748b;
+  color: var(--color-text-dim);
 }
 </style>

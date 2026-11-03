@@ -233,7 +233,7 @@ export default {
 
 .trend-card {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border-2);
   border-radius: 10px;
   padding: 1.5rem;
   transition: all 0.2s ease;
@@ -261,7 +261,7 @@ export default {
   gap: 1rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--color-border-2);
 }
 
 .trend-icon {
@@ -294,7 +294,7 @@ export default {
 .trend-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -302,7 +302,7 @@ export default {
 .trend-count {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   margin-top: 0.25rem;
 }
 
@@ -317,18 +317,18 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0.75rem;
-  background: #f8fafc;
+  background: var(--color-surface-3);
   border-radius: 6px;
   transition: background 0.2s;
 }
 
 .trend-item:hover {
-  background: #f1f5f9;
+  background: var(--color-surface-2);
 }
 
 .item-name {
   font-size: 0.875rem;
-  color: #0f172a;
+  color: var(--color-text);
   font-weight: 500;
   flex: 1;
   overflow: hidden;
@@ -356,12 +356,12 @@ export default {
 }
 
 .item-change.neutral {
-  color: #64748b;
+  color: var(--color-text-dim);
 }
 
 .more-items {
   font-size: 0.813rem;
-  color: #64748b;
+  color: var(--color-text-dim);
   font-style: italic;
   text-align: center;
   padding: 0.5rem;

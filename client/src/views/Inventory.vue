@@ -33,7 +33,11 @@
             </button>
           </div>
         </div>
-        <div class="table-container">
+        <div v-if="filteredItems.length === 0" class="empty-state">
+          <CodyMascot moment="shrug" :size="96" class="empty-cody" />
+          <p>{{ t('inventory.noResults') }}</p>
+        </div>
+        <div v-else class="table-container">
           <table>
             <thead>
               <tr>
@@ -88,11 +92,13 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import CodyMascot from '../components/CodyMascot.vue'
 import InventoryDetailModal from '../components/InventoryDetailModal.vue'
 
 export default {
   name: 'Inventory',
   components: {
+    CodyMascot,
     InventoryDetailModal
   },
   setup() {
@@ -225,17 +231,14 @@ export default {
 </script>
 
 <style scoped>
-.page-header {
-  margin-bottom: 1.5rem;
+.empty-state {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-mid);
 }
 
-.page-header h2 {
-  margin-bottom: 0.25rem;
-}
-
-.page-header p {
-  color: #64748b;
-  font-size: 0.875rem;
+.empty-cody {
+  margin: 0 auto var(--space-3);
 }
 
 .card-header {
@@ -243,14 +246,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 .card-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -266,30 +267,30 @@ export default {
   left: 0.75rem;
   width: 18px;
   height: 18px;
-  color: #94a3b8;
+  color: var(--color-text-dim);
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
   padding: 0.5rem 2.5rem 0.5rem 2.5rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.875rem;
-  color: #0f172a;
-  background: #f8fafc;
+  color: var(--color-text);
+  background: var(--color-surface-3);
   transition: all 0.2s;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-accent);
   background: white;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: var(--color-text-dim);
 }
 
 .clear-search {
@@ -302,14 +303,14 @@ export default {
   background: transparent;
   border: none;
   border-radius: 4px;
-  color: #94a3b8;
+  color: var(--color-text-dim);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .clear-search:hover {
-  background: #e2e8f0;
-  color: #64748b;
+  background: var(--color-border);
+  color: var(--color-text-dim);
 }
 
 .clear-search svg {
@@ -321,7 +322,7 @@ export default {
 .error {
   padding: 2rem;
   text-align: center;
-  color: #64748b;
+  color: var(--color-text-dim);
 }
 
 .error {

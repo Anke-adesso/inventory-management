@@ -6,6 +6,19 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
+    reports: 'レポート',
+    groupOperations: 'オペレーション',
+    groupFinance: '財務・レポート',
+    mainNavigation: 'メイン',
+    skipToContent: 'コンテンツへスキップ',
+    openNavigation: 'ナビゲーションを開く',
+    closeNavigation: 'ナビゲーションを閉じる',
+    easterEggAlt: 'Clawd が飛び出す様子',
+    easterEggClose: '閉じる',
+    collapseSidebar: 'サイドバーを折りたたむ',
+    expandSidebar: 'サイドバーを展開',
+    collapse: '折りたたむ',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -80,6 +93,7 @@ export default {
     skus: 'SKU',
     searchPlaceholder: '品目名で検索...',
     clearSearch: '検索をクリア',
+    noResults: '検索条件またはフィルターに一致する在庫がありません。',
     totalItems: '総品目数',
     totalValue: '総価値',
     lowStockItems: '在庫僅少品目',
@@ -126,6 +140,51 @@ export default {
       status: 'ステータス',
       expectedDelivery: '予定配達日',
       actualDelivery: '実際の配達日'
+    },
+    submittedOrders: {
+      title: '発注済みオーダー',
+      empty: '補充発注はまだ送信されていません。',
+      goToRestocking: '補充発注へ移動',
+      loadFailed: '発注済みオーダーの読み込みに失敗しました',
+      days: '{count}日',
+      table: {
+        orderNumber: '注文番号',
+        submittedDate: '送信日',
+        items: '品目',
+        totalCost: '合計コスト',
+        leadTime: 'リードタイム',
+        expectedDelivery: '予定配達日',
+        status: 'ステータス'
+      }
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充発注',
+    description: '予算を需要予測に基づいて配分し、補充発注を行います',
+    budget: '予算',
+    allocated: '配分額',
+    remaining: '残り予算',
+    items: '品目数',
+    recommendations: '推奨リスト',
+    placeOrder: '発注する',
+    placing: '発注中...',
+    partial: '一部',
+    empty: 'この予算では発注可能な品目がありません。予算を増やすと推奨が表示されます。',
+    success: '注文 {orderNumber} を送信しました。',
+    viewOrders: '注文を表示',
+    loadFailed: '推奨の読み込みに失敗しました',
+    days: '{count}日',
+    table: {
+      sku: 'SKU',
+      name: '製品',
+      trend: 'トレンド',
+      forecastedDemand: '需要予測',
+      unitCost: '単価',
+      recommendedQty: '推奨数量',
+      lineCost: '明細コスト',
+      leadTime: 'リードタイム'
     }
   },
 
@@ -190,6 +249,7 @@ export default {
 
   // Filters
   filters: {
+    reset: 'すべてのフィルターをリセット',
     timePeriod: '期間',
     location: '場所',
     category: 'カテゴリ',
@@ -204,6 +264,7 @@ export default {
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '送信済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'
@@ -309,6 +370,41 @@ export default {
     english: 'English',
     japanese: '日本語',
     selectLanguage: '言語を選択'
+  },
+
+  // Reports
+  reports: {
+    title: 'パフォーマンスレポート',
+    description: '四半期ごとの業績指標と月次トレンドを表示します',
+    loadFailed: 'レポートの読み込みに失敗しました',
+    empty: '現在のフィルターに一致するレポートデータはありません。',
+    monthFormat: '{year}年{month}',
+    quarterly: {
+      title: '四半期業績',
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総売上',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '出荷完了率'
+    },
+    trend: {
+      title: '月次売上推移'
+    },
+    mom: {
+      title: '前月比分析',
+      month: '月',
+      orders: '注文数',
+      revenue: '売上',
+      change: '増減額',
+      growthRate: '成長率',
+      notAvailable: '該当なし'
+    },
+    stats: {
+      totalRevenue: '総売上(年初来)',
+      avgMonthlyRevenue: '月平均売上',
+      totalOrders: '総注文数(年初来)',
+      bestQuarter: '最高業績の四半期'
+    }
   },
 
   // Common

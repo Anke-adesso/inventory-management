@@ -1,0 +1,137 @@
+/* ==========================================================================
+   Theme: Dean (warm neutrals + mauve accent)
+   Single source of truth for color, spacing, radius, shadow and type.
+   Neutrals and shadows follow the vue-saas-redesign dean.css starter.
+   Deviations from dean.css: text-dim (AA fix), status colors (kept
+   green/blue/yellow/red, AA-checked) and accent-hover.
+   Components only ever reference these variables.
+   ========================================================================== */
+
+:root {
+  /* ---- Surfaces ---------------------------------------------------------- */
+  --color-bg:            #F7F7F5;  /* app background behind content */
+  --color-surface:       #ffffff;  /* cards, panels, dialogs */
+  --color-surface-2:     #F0EFEC;  /* hover rows, subtle fills */
+  --color-surface-3:     #F7F7F5;  /* nested panels, table headers */
+  --color-input-bg:      #ffffff;
+  --color-nav-bg:        #ffffff;  /* sidebar + top bar */
+
+  /* ---- Borders ----------------------------------------------------------- */
+  --color-border:        #D9D7D3;  /* default, inputs */
+  --color-border-2:      #E4E3DF;  /* subtle dividers, cards */
+  --color-border-3:      #CCCAC6;  /* strong / input hover */
+
+  /* ---- Text -------------------------------------------------------------- */
+  --color-text:          #1A1A1A;  /* primary, 17.4:1 on white, 16.2:1 on bg */
+  --color-text-mid:      #5A4A4E;  /* secondary, labels, nav items, 8.3:1 on white, 7.8:1 on bg */
+  --color-text-dim:      #74646A;  /* warm mauve-grey. 5.6:1 on white, 5.2:1 on bg, 4.8:1 on surface-2. Replaces dean.css #9A8A8E (3.3:1, fails AA) */
+  --color-text-faint:    #C8C0C2;  /* 1.8:1. Disabled states only, never text that must be read */
+
+  /* ---- Accent (Dean) ----------------------------------------------------- */
+  --color-accent:        #8E4A55;  /* 5.6:1 on accent-bg, 6.4:1 white on accent */
+  --color-accent-bg:     #F5ECEE;  /* active nav item, selected rows */
+  --color-accent-border: #8E4A5533;
+  --color-accent-hover:  #7A3E48;  /* primary button / link hover (not in dean.css) */
+  --color-on-accent:     #FFFFFF;
+
+  /* ---- Status: green / blue / yellow / red --------------------------------
+     Each foreground is >= 4.5:1 on its own -bg and on white. */
+  --color-success:        #15803d;  /* 4.6:1 on success-bg */
+  --color-success-bg:     #dcfce7;
+  --color-success-border: #15803d33;
+
+  --color-info:           #1d4ed8;  /* 5.5:1 on info-bg */
+  --color-info-bg:        #dbeafe;
+  --color-info-border:    #1d4ed833;
+
+  --color-warning:        #b45309;  /* 4.5:1 on warning-bg */
+  --color-warning-bg:     #fef3c7;
+  --color-warning-border: #b4530933;
+
+  --color-danger:         #b91c1c;  /* 5.3:1 on danger-bg */
+  --color-danger-bg:      #fee2e2;
+  --color-danger-border:  #b91c1c33;
+
+  /* Dean token names kept as aliases */
+  --color-done:          var(--color-success);
+  --color-done-bg:       var(--color-success-bg);
+  --color-done-border:   var(--color-success-border);
+  --color-warn:          var(--color-warning);
+
+  /* ---- Focus ------------------------------------------------------------- */
+  --focus-ring: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-accent);
+
+  /* ---- Spacing (4px base) ------------------------------------------------ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---- Radius ------------------------------------------------------------ */
+  --radius-sm: 6px;   /* inputs, buttons, nav items */
+  --radius-md: 8px;   /* cards */
+  --radius-lg: 12px;  /* dialogs, large panels */
+  --radius-full: 999px;
+
+  /* ---- Shadow (warm-tinted, low) ---------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-md: 0 1px 3px rgba(26, 26, 26, 0.06), 0 4px 12px rgba(26, 26, 26, 0.04);
+  --shadow-lg: 0 8px 24px rgba(26, 26, 26, 0.08), 0 2px 6px rgba(26, 26, 26, 0.04);
+
+  /* ---- Typography (existing stack kept, no webfont) ---------------------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
+
+  --text-xs:   12px;  /* line-height 16px */
+  --text-sm:   13px;  /* line-height 20px: nav, tables, secondary */
+  --text-base: 14px;  /* line-height 22px: body */
+  --text-lg:   16px;  /* line-height 24px: card titles */
+  --text-xl:   20px;  /* line-height 28px: page titles */
+  --text-2xl:  24px;  /* line-height 32px: dashboards / hero numbers */
+
+  /* ---- Shell dimensions -------------------------------------------------- */
+  --shell-sidebar-w: 248px;
+  --shell-sidebar-w-collapsed: 64px;
+  --shell-topbar-h: 56px;
+  --shell-content-max: 1280px;
+  --shell-content-pad: var(--space-8);
+
+  /* ---- Layering (modals use 1000-2000 and must stay above all of these) --- */
+  --z-sticky: 20;
+  --z-backdrop: 30;
+  --z-drawer: 40;
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+}
+
+@media (max-width: 767px) {
+  :root { --shell-content-pad: var(--space-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; }
+}
+
+/* Minimal global base: only what the shell depends on. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #app { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }

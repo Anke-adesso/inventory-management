@@ -59,7 +59,8 @@
         class="reset-filters-btn"
         @click="resetFilters"
         :disabled="!hasActiveFilters"
-        title="Reset all filters"
+        :title="t('filters.reset')"
+        :aria-label="t('filters.reset')"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
@@ -101,94 +102,111 @@ export default {
 </script>
 
 <style scoped>
+/* Sticks to the top of the scrolling content column (shell__content), under the top bar. */
 .filters-bar {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem 0;
+  background: var(--color-nav-bg);
+  border-bottom: 1px solid var(--color-border-2);
+  padding: var(--space-2) 0;
   position: sticky;
-  top: 70px;
-  z-index: 90;
+  top: 0;
+  z-index: var(--z-sticky);
 }
 
 .filters-container {
-  max-width: 1600px;
+  max-width: var(--shell-content-max);
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 var(--shell-content-pad);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .filters-grid {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-2) var(--space-4);
   flex: 1;
+  min-width: 0;
 }
 
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .filter-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #64748b;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-text-mid);
   white-space: nowrap;
 }
 
 .filter-select {
-  padding: 0.4rem 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.813rem;
-  color: #0f172a;
-  background: white;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  background: var(--color-input-bg);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
   font-weight: 500;
-  min-width: 140px;
+  min-width: 128px;
 }
 
 .filter-select:hover {
-  border-color: #94a3b8;
+  border-color: var(--color-border-3);
 }
 
-.filter-select:focus {
+.filter-select:focus-visible {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: var(--focus-ring);
 }
 
 .reset-filters-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  color: #64748b;
+  width: 32px;
+  height: 32px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-mid);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
   flex-shrink: 0;
 }
 
 .reset-filters-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: var(--color-surface-2);
+  border-color: var(--color-border-3);
+  color: var(--color-text);
 }
 
 .reset-filters-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .reset-filters-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 767px) {
+  /* The wrapped toolbar is too tall to keep pinned on phones. */
+  .filters-bar { position: static; }
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  .filter-select { min-width: 0; }
 }
 </style>

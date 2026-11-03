@@ -6,6 +6,19 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
+    reports: 'Reports',
+    groupOperations: 'Operations',
+    groupFinance: 'Finance & Reporting',
+    mainNavigation: 'Main',
+    skipToContent: 'Skip to content',
+    openNavigation: 'Open navigation',
+    closeNavigation: 'Close navigation',
+    easterEggAlt: 'Clawd breaking out',
+    easterEggClose: 'Close',
+    collapseSidebar: 'Collapse sidebar',
+    expandSidebar: 'Expand sidebar',
+    collapse: 'Collapse',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -80,6 +93,7 @@ export default {
     skus: 'SKUs',
     searchPlaceholder: 'Search by item name...',
     clearSearch: 'Clear search',
+    noResults: 'No inventory items match your search or filters.',
     totalItems: 'Total Items',
     totalValue: 'Total Value',
     lowStockItems: 'Low Stock Items',
@@ -126,6 +140,51 @@ export default {
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
+    },
+    submittedOrders: {
+      title: 'Submitted Orders',
+      empty: 'No restocking orders have been submitted yet.',
+      goToRestocking: 'Go to Restocking',
+      loadFailed: 'Failed to load submitted orders',
+      days: '{count} days',
+      table: {
+        orderNumber: 'Order Number',
+        submittedDate: 'Submitted',
+        items: 'Items',
+        totalCost: 'Total Cost',
+        leadTime: 'Lead Time',
+        expectedDelivery: 'Expected Delivery',
+        status: 'Status'
+      }
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Allocate a budget across forecasted demand and place a restocking order',
+    budget: 'Budget',
+    allocated: 'Allocated',
+    remaining: 'Remaining',
+    items: 'Items',
+    recommendations: 'Recommendations',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    partial: 'Partial',
+    empty: 'No items can be funded at this budget. Increase the budget to see recommendations.',
+    success: 'Order {orderNumber} submitted successfully.',
+    viewOrders: 'View orders',
+    loadFailed: 'Failed to load recommendations',
+    days: '{count} days',
+    table: {
+      sku: 'SKU',
+      name: 'Product',
+      trend: 'Trend',
+      forecastedDemand: 'Forecasted Demand',
+      unitCost: 'Unit Cost',
+      recommendedQty: 'Recommended Qty',
+      lineCost: 'Line Cost',
+      leadTime: 'Lead Time'
     }
   },
 
@@ -190,6 +249,7 @@ export default {
 
   // Filters
   filters: {
+    reset: 'Reset all filters',
     timePeriod: 'Time Period',
     location: 'Location',
     category: 'Category',
@@ -204,6 +264,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'
@@ -309,6 +370,41 @@ export default {
     english: 'English',
     japanese: 'Japanese',
     selectLanguage: 'Select Language'
+  },
+
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    description: 'View quarterly performance metrics and monthly trends',
+    loadFailed: 'Failed to load reports',
+    empty: 'No report data matches the current filters.',
+    monthFormat: '{month} {year}',
+    quarterly: {
+      title: 'Quarterly Performance',
+      quarter: 'Quarter',
+      totalOrders: 'Total Orders',
+      totalRevenue: 'Total Revenue',
+      avgOrderValue: 'Avg Order Value',
+      fulfillmentRate: 'Fulfillment Rate'
+    },
+    trend: {
+      title: 'Monthly Revenue Trend'
+    },
+    mom: {
+      title: 'Month-over-Month Analysis',
+      month: 'Month',
+      orders: 'Orders',
+      revenue: 'Revenue',
+      change: 'Change',
+      growthRate: 'Growth Rate',
+      notAvailable: 'N/A'
+    },
+    stats: {
+      totalRevenue: 'Total Revenue (YTD)',
+      avgMonthlyRevenue: 'Avg Monthly Revenue',
+      totalOrders: 'Total Orders (YTD)',
+      bestQuarter: 'Best Performing Quarter'
+    }
   },
 
   // Common

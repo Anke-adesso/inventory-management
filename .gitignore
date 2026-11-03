@@ -53,3 +53,9 @@ logs/
 
 # Environment variables
 .env
+
+# Local-only third-party asset (Anthropic artwork) - do not commit to this public repo
+client/public/Clawd-Breaking.gif
+
+# Local-only third-party asset (official adesso Cody artwork + rig) - do not commit to this public repo
+client/public/cody/
