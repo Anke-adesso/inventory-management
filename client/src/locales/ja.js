@@ -93,6 +93,7 @@ export default {
     skus: 'SKU',
     searchPlaceholder: '品目名で検索...',
     clearSearch: '検索をクリア',
+    noResults: '検索条件またはフィルターに一致する在庫がありません。',
     totalItems: '総品目数',
     totalValue: '総価値',
     lowStockItems: '在庫僅少品目',

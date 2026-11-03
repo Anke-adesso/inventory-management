@@ -2,6 +2,7 @@
   <div class="dashboard">
     <div class="page-header">
       <h2>{{ t('dashboard.title') }}</h2>
+      <CodyMascot moment="greet" :size="88" class="header-cody" />
     </div>
 
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
@@ -302,12 +303,14 @@ import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
 import { formatCurrency } from '../utils/currency'
+import CodyMascot from '../components/CodyMascot.vue'
 import ProductDetailModal from '../components/ProductDetailModal.vue'
 import BacklogDetailModal from '../components/BacklogDetailModal.vue'
 
 export default {
   name: 'Dashboard',
   components: {
+    CodyMascot,
     ProductDetailModal,
     BacklogDetailModal,
   },
@@ -1260,5 +1263,11 @@ export default {
   background: var(--color-text);
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(26, 26, 26, 0.2);
+}
+
+/* Sits at the right end of the header row, beside the title and never over the data below. */
+.header-cody {
+  margin-left: auto;
+  margin-right: var(--space-4);
 }
 </style>

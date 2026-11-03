@@ -7,7 +7,10 @@
 
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else-if="isEmpty" class="card empty-state">{{ t('reports.empty') }}</div>
+    <div v-else-if="isEmpty" class="card empty-state">
+      <CodyMascot moment="shrug" :size="96" class="empty-cody" />
+      {{ t('reports.empty') }}
+    </div>
     <div v-else>
       <!-- Quarterly Performance -->
       <div class="card">
@@ -127,6 +130,7 @@
 
 <script>
 import { ref, computed, onMounted, watch } from 'vue'
+import CodyMascot from '../components/CodyMascot.vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
@@ -137,6 +141,7 @@ const MAX_BAR_HEIGHT = 200
 
 export default {
   name: 'Reports',
+  components: { CodyMascot },
   setup() {
     const { t, currentCurrency } = useI18n()
 
@@ -362,5 +367,9 @@ export default {
   text-align: center;
   color: var(--color-text-mid);
   padding: var(--space-12);
+}
+
+.empty-cody {
+  margin: 0 auto var(--space-3);
 }
 </style>

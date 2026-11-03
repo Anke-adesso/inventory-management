@@ -48,7 +48,8 @@
       </div>
 
       <div v-if="orderSuccess" class="success-banner">
-        <span>{{ t('restocking.success', { orderNumber: orderSuccess.order_number }) }}</span>
+        <CodyMascot moment="celebrate" :size="72" class="banner-cody" />
+        <span class="success-text">{{ t('restocking.success', { orderNumber: orderSuccess.order_number }) }}</span>
         <router-link to="/orders">{{ t('restocking.viewOrders') }}</router-link>
       </div>
       <div v-if="submitError" class="error">{{ submitError }}</div>
@@ -110,6 +111,7 @@
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { api } from '../api'
+import CodyMascot from '../components/CodyMascot.vue'
 import { useI18n } from '../composables/useI18n'
 import { formatCurrency as formatCurrencyUtil, formatCurrencyWithDecimals } from '../utils/currency'
 
@@ -118,6 +120,7 @@ const DEBOUNCE_MS = 250
 
 export default {
   name: 'Restocking',
+  components: { CodyMascot },
   setup() {
     // Global filters intentionally ignored: forecast SKUs mostly don't exist in inventory, so warehouse/category can't be mapped.
     const { t, currentCurrency, translateProductName } = useI18n()
@@ -297,5 +300,13 @@ export default {
   color: #166534;
   font-weight: 600;
   text-decoration: underline;
+}
+
+.banner-cody {
+  margin: calc(-1 * var(--space-2)) var(--space-4) calc(-1 * var(--space-2)) 0;
+}
+
+.success-text {
+  flex: 1;
 }
 </style>

@@ -33,7 +33,11 @@
             </button>
           </div>
         </div>
-        <div class="table-container">
+        <div v-if="filteredItems.length === 0" class="empty-state">
+          <CodyMascot moment="shrug" :size="96" class="empty-cody" />
+          <p>{{ t('inventory.noResults') }}</p>
+        </div>
+        <div v-else class="table-container">
           <table>
             <thead>
               <tr>
@@ -88,11 +92,13 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import CodyMascot from '../components/CodyMascot.vue'
 import InventoryDetailModal from '../components/InventoryDetailModal.vue'
 
 export default {
   name: 'Inventory',
   components: {
+    CodyMascot,
     InventoryDetailModal
   },
   setup() {
@@ -225,6 +231,16 @@ export default {
 </script>
 
 <style scoped>
+.empty-state {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-mid);
+}
+
+.empty-cody {
+  margin: 0 auto var(--space-3);
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
