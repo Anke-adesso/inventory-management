@@ -76,7 +76,7 @@ uv run --project ../server pytest -v   # tests/ has no own project; deps live in
 - `GET /api/dashboard/summary` - All filters
 - `GET /api/demand`, `/api/backlog` - No filters
 - `GET /api/spending/*` - Summary, monthly, categories, transactions
-- `GET /api/reports/quarterly`, `/api/reports/monthly-trends` - No filters
+- `GET /api/reports/quarterly`, `/api/reports/monthly-trends` - Filters: warehouse, category, status, month
 
 ## Common Issues
 1. Use unique keys in v-for (not `index`) - use `sku`, `month`, etc.
