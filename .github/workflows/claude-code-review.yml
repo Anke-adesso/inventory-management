@@ -32,6 +32,10 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Code Review
+        # Routes the action through the API gateway the key belongs to. The URL lives
+        # in a secret so no internal hostname is committed to this public repo.
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
