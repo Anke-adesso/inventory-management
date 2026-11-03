@@ -218,14 +218,14 @@
                       @click.stop="openPOModal(item)"
                       class="po-button create"
                     >
-                      Create PO
+                      {{ t('purchaseOrder.createButton') }}
                     </button>
                     <button
                       v-else
                       @click.stop="viewPO(item)"
                       class="po-button view"
                     >
-                      View PO
+                      {{ t('purchaseOrder.viewButton') }}
                     </button>
                   </td>
                 </tr>
@@ -309,6 +309,7 @@ import { formatCurrency } from '../utils/currency'
 import CodyMascot from '../components/CodyMascot.vue'
 import ProductDetailModal from '../components/ProductDetailModal.vue'
 import BacklogDetailModal from '../components/BacklogDetailModal.vue'
+import PurchaseOrderModal from '../components/PurchaseOrderModal.vue'
 
 export default {
   name: 'Dashboard',
@@ -316,6 +317,7 @@ export default {
     CodyMascot,
     ProductDetailModal,
     BacklogDetailModal,
+    PurchaseOrderModal,
   },
   setup() {
     const { t, currentCurrency, translateProductName, translateWarehouse } = useI18n()
