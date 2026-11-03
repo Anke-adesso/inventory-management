@@ -7,12 +7,13 @@ Factory Inventory Management System Demo with GitHub integration - Full-stack ap
 ## Critical Tool Usage Rules
 
 ### Subagents
-Use the Task tool with these specialized subagents for appropriate tasks:
+Use the Agent tool with these specialized subagents for appropriate tasks:
 
 - **vue-expert**: Use for Vue 3 frontend features, UI components, styling, and client-side functionality
   - Examples: Creating components, fixing reactivity issues, performance optimization, complex state management
   - **MANDATORY RULE: ANY time you need to create or significantly modify a .vue file, you MUST delegate to vue-expert**
 - **code-reviewer**: Use after writing significant code to review quality and best practices
+- **security-auditor**: Use before committing changes that touch input handling, config, or dependencies
 - **Explore**: Use for understanding codebase structure, searching for patterns, or answering questions about how components work
 - **general-purpose**: Use for complex multi-step tasks or when other agents don't fit
 
@@ -42,6 +43,16 @@ cd client
 npm install && npm run dev
 ```
 
+## Testing
+
+```bash
+cd tests
+uv run pytest -v
+```
+
+- Backend only: pytest + FastAPI TestClient in `tests/backend/`
+- **No frontend test suite** (the client has no test script). Verify frontend changes in the browser via Playwright MCP against `http://localhost:3000`
+
 ## Working Conventions
 
 - Always document non-obvious logic changes with comments: explain *why*, not *what*
@@ -54,13 +65,18 @@ npm install && npm run dev
 **Filter System**: 4 filters (Time Period, Warehouse, Category, Order Status) apply to all data via query params
 **Data Flow**: Vue filters → `client/src/api.js` → FastAPI → In-memory filtering → Pydantic validation → Computed properties
 **Reactivity**: Raw data in refs (`allOrders`, `inventoryItems`), derived data in computed properties
+**Shared Filter State**: Singleton refs in `client/src/composables/useFilters.js` - use it, don't duplicate filter state per view
+**i18n**: Custom `useI18n` composable with `client/src/locales/en.js` and `ja.js`. All user-facing strings go through `t()` and must be added to **both** locale files - no hardcoded UI text
 
 ## API Endpoints
 - `GET /api/inventory` - Filters: warehouse, category
+- `GET /api/inventory/{item_id}` - Single item
 - `GET /api/orders` - Filters: warehouse, category, status, month
+- `GET /api/orders/{order_id}` - Single order
 - `GET /api/dashboard/summary` - All filters
 - `GET /api/demand`, `/api/backlog` - No filters
 - `GET /api/spending/*` - Summary, monthly, categories, transactions
+- `GET /api/reports/quarterly`, `/api/reports/monthly-trends` - No filters
 
 ## Common Issues
 1. Use unique keys in v-for (not `index`) - use `sku`, `month`, etc.
@@ -71,10 +87,17 @@ npm install && npm run dev
 
 ## File Locations
 - Views: `client/src/views/*.vue`
+- Components: `client/src/components/` (detail modals, `FilterBar`, `LanguageSwitcher`)
+- Composables: `client/src/composables/` (`useFilters`, `useI18n`, `useAuth`)
+- Locales: `client/src/locales/{en,ja}.js`
+- Utils: `client/src/utils/currency.js`
 - API Client: `client/src/api.js`
 - Backend: `server/main.py`, `server/mock_data.py`
 - Data: `server/data/*.json`
 - Styles: `client/src/App.vue`
+- Tests: `tests/backend/`
+
+Detailed per-side guidance lives in `client/CLAUDE.md` and `server/CLAUDE.md` - keep it there, not here.
 
 ## Design System
 - Colors: Slate/gray (#0f172a, #64748b, #e2e8f0)
