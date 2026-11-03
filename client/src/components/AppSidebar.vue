@@ -47,7 +47,7 @@
     <!-- Teleported: the sidebar clips overflow and the mobile drawer may be transformed. -->
     <Teleport to="body">
       <Transition name="egg-fade">
-        <div v-if="eggOpen" class="egg__backdrop" @click.self="closeEgg">
+        <div v-if="eggOpen" class="egg__backdrop" @click="closeEgg">
           <div class="egg__panel" role="dialog" aria-modal="true" :aria-label="t('nav.easterEggAlt')">
             <button
               ref="eggCloseBtn"
@@ -273,38 +273,32 @@ export default {
   display: grid;
   place-items: center;
   padding: var(--space-4);
-  background: color-mix(in srgb, var(--color-text) 60%, transparent);
+  /* No scrim: the gif has a transparent background and floats over the app.
+     The layer still covers the page so any click dismisses it. */
+  background: transparent;
 }
 .egg__panel {
   position: relative;
   width: min(420px, 100%);
-  padding: var(--space-2);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lg);
 }
 .egg__img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--radius-md);
 }
+/* Visually hidden but still focusable for screen readers: without a panel a
+   visible X floats detached from the gif. Esc or any click closes as well. */
 .egg__close {
   position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
   border: 0;
-  border-radius: var(--radius-full);
-  background: var(--color-surface);
-  color: var(--color-text-mid);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
 }
-.egg__close:hover { color: var(--color-text); }
 .egg-fade-enter-active,
 .egg-fade-leave-active { transition: opacity var(--dur-base) var(--ease-out); }
 .egg-fade-enter-from,
