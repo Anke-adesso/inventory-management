@@ -26,6 +26,8 @@ export default {
   // Dashboard
   dashboard: {
     title: '概要',
+    pageTitle: 'ビジネス概要',
+    description: '主要指標、注文の状況、在庫価値を一目で確認',
     kpi: {
       title: '主要業績評価指標',
       inventoryTurnover: '在庫回転率',
@@ -234,6 +236,7 @@ export default {
     stableDemand: '需要安定',
     decreasingDemand: '需要減少',
     itemsCount: '{count}件',
+    itemsCountOne: '{count}件',
     more: 'さらに...',
     demandForecasts: '需要予測',
     table: {

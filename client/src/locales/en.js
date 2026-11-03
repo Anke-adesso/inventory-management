@@ -26,6 +26,8 @@ export default {
   // Dashboard
   dashboard: {
     title: 'Overview',
+    pageTitle: 'Business Overview',
+    description: 'Key metrics, order health and inventory value at a glance',
     kpi: {
       title: 'Key Performance Indicators',
       inventoryTurnover: 'Inventory Turnover Rate',
@@ -234,6 +236,7 @@ export default {
     stableDemand: 'Stable Demand',
     decreasingDemand: 'Decreasing Demand',
     itemsCount: '{count} items',
+    itemsCountOne: '{count} item',
     more: 'more...',
     demandForecasts: 'Demand Forecasts',
     table: {
