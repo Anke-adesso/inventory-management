@@ -53,3 +53,6 @@ logs/
 
 # Environment variables
 .env
+
+# Local-only third-party asset (Anthropic artwork) - do not commit to this public repo
+client/public/Clawd-Breaking.gif

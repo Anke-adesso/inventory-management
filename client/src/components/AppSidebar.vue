@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar" :class="{ 'is-collapsed': collapsed }">
     <div class="sidebar__brand">
-      <span class="sidebar__mark" aria-hidden="true">{{ markLetter }}</span>
+      <span class="sidebar__mark" aria-hidden="true" @click="onMarkClick">{{ markLetter }}</span>
       <div v-if="!collapsed" class="sidebar__brand-text">
         <span class="sidebar__name">{{ t('nav.companyName') }}</span>
         <span class="sidebar__subtitle">{{ t('nav.subtitle') }}</span>
@@ -43,11 +43,31 @@
         <span v-if="!collapsed">{{ t('nav.collapse') }}</span>
       </button>
     </div>
+
+    <!-- Teleported: the sidebar clips overflow and the mobile drawer may be transformed. -->
+    <Teleport to="body">
+      <Transition name="egg-fade">
+        <div v-if="eggOpen" class="egg__backdrop" @click.self="closeEgg">
+          <div class="egg__panel" role="dialog" aria-modal="true" :aria-label="t('nav.easterEggAlt')">
+            <button
+              ref="eggCloseBtn"
+              type="button"
+              class="egg__close"
+              :aria-label="t('nav.easterEggClose')"
+              @click="closeEgg"
+            >
+              <X :size="18" aria-hidden="true" />
+            </button>
+            <img class="egg__img" :src="EGG_SRC" :alt="t('nav.easterEggAlt')" />
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </aside>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'
 import { navigationGroups } from '../config/navigation'
@@ -65,7 +85,64 @@ export default {
     const { t } = useI18n()
     const groups = navigationGroups
     const markLetter = computed(() => t('nav.companyName').charAt(0))
-    return { t, groups, markLetter }
+
+    // Easter egg: 5 clicks on the brand mark within 2s. The gif is gitignored (third-party
+    // artwork), so it may not exist on a fresh clone: preload it and open only on success,
+    // otherwise stay silent (no broken image, no empty overlay).
+    const EGG_SRC = '/Clawd-Breaking.gif'
+    const EGG_CLICKS = 5
+    const EGG_WINDOW_MS = 2000
+    const eggOpen = ref(false)
+    const eggCloseBtn = ref(null)
+    let clicks = 0
+    let resetTimer = null
+    let loading = false
+
+    const resetClicks = () => {
+      clicks = 0
+      clearTimeout(resetTimer)
+      resetTimer = null
+    }
+
+    const closeEgg = () => { eggOpen.value = false }
+
+    const onKeydown = (e) => { if (e.key === 'Escape') closeEgg() }
+
+    const triggerEgg = () => {
+      if (loading || eggOpen.value) return
+      loading = true
+      const img = new Image()
+      img.onload = () => {
+        loading = false
+        eggOpen.value = true
+        nextTick(() => eggCloseBtn.value && eggCloseBtn.value.focus())
+      }
+      img.onerror = () => { loading = false }
+      img.src = EGG_SRC
+    }
+
+    const onMarkClick = () => {
+      // Window starts at the first click; later clicks don't extend it.
+      if (clicks === 0) resetTimer = setTimeout(resetClicks, EGG_WINDOW_MS)
+      clicks += 1
+      if (clicks >= EGG_CLICKS) {
+        resetClicks()
+        triggerEgg()
+      }
+    }
+
+    // Listener only lives while the overlay is open.
+    watch(eggOpen, (open) => {
+      if (open) document.addEventListener('keydown', onKeydown)
+      else document.removeEventListener('keydown', onKeydown)
+    })
+
+    onBeforeUnmount(() => {
+      clearTimeout(resetTimer)
+      document.removeEventListener('keydown', onKeydown)
+    })
+
+    return { t, groups, markLetter, EGG_SRC, eggOpen, eggCloseBtn, onMarkClick, closeEgg }
   }
 }
 </script>
@@ -187,4 +264,53 @@ export default {
 }
 .is-collapsed .sidebar__toggle { justify-content: center; padding: 0; }
 .sidebar__toggle:hover { background: var(--color-surface-2); color: var(--color-text); }
+
+/* Easter egg overlay (teleported, so scoped styles still apply via data attribute) */
+.egg__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2100; /* above modals (1000-2000) */
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.egg__panel {
+  position: relative;
+  width: min(420px, 100%);
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+.egg__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+.egg__close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text-mid);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+.egg__close:hover { color: var(--color-text); }
+.egg-fade-enter-active,
+.egg-fade-leave-active { transition: opacity var(--dur-base) var(--ease-out); }
+.egg-fade-enter-from,
+.egg-fade-leave-to { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .egg-fade-enter-active,
+  .egg-fade-leave-active { transition: none; }
+}
 </style>

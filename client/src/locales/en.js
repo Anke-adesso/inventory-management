@@ -14,6 +14,8 @@ export default {
     skipToContent: 'Skip to content',
     openNavigation: 'Open navigation',
     closeNavigation: 'Close navigation',
+    easterEggAlt: 'Clawd breaking out',
+    easterEggClose: 'Close',
     collapseSidebar: 'Collapse sidebar',
     expandSidebar: 'Expand sidebar',
     collapse: 'Collapse',

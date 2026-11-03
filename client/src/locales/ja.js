@@ -14,6 +14,8 @@ export default {
     skipToContent: 'コンテンツへスキップ',
     openNavigation: 'ナビゲーションを開く',
     closeNavigation: 'ナビゲーションを閉じる',
+    easterEggAlt: 'Clawd が飛び出す様子',
+    easterEggClose: '閉じる',
     collapseSidebar: 'サイドバーを折りたたむ',
     expandSidebar: 'サイドバーを展開',
     collapse: '折りたたむ',
