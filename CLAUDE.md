@@ -42,6 +42,13 @@ cd client
 npm install && npm run dev
 ```
 
+## Working Conventions
+
+- Always document non-obvious logic changes with comments: explain *why*, not *what*
+- Prefer the smallest correct change over a rewrite unless a rewrite is explicitly requested
+- Tests and error handling are part of the change; if skipped, state why
+- If existing code does something questionable, flag it once, then work within it unless asked to fix it
+
 ## Key Patterns
 
 **Filter System**: 4 filters (Time Period, Warehouse, Category, Order Status) apply to all data via query params
