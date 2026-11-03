@@ -156,8 +156,11 @@ export default {
   margin-bottom: var(--space-6);
 }
 
+/* Accent rule marks the page title; the one place the accent is decorative */
 .page-header h2 {
   flex: 1 1 auto;
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-accent);
   min-width: 0;
   font-size: var(--text-xl);
   line-height: 28px;

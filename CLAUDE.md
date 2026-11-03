@@ -101,7 +101,7 @@ Detailed per-side guidance lives in `client/CLAUDE.md` and `server/CLAUDE.md` - 
 
 ## Design System
 - Tokens: `client/src/styles/theme.css` is the single source for color, spacing, radius, shadow and type (`--color-*`, `--space-*`, ...). Use tokens, not hex values, in new or touched styles
-- Colors: Slate/gray neutrals (#0f172a, #64748b, #e2e8f0) with a mauve accent (#8E4A55) for active nav, primary buttons, links and focus
+- Colors: Warm Dean neutrals (bg #F7F7F5, surfaces #FFFFFF/#F0EFEC, borders #D9D7D3/#E4E3DF, text #1A1A1A, secondary #5A4A4E, dim #74646A) with a mauve accent (#8E4A55) for active nav, primary buttons, links, focus and primary chart series. No cool slate greys
 - Status: green/blue/yellow/red
 - Layout: left sidebar (collapsible to icons-only, drawer on mobile), slim top bar, sticky FilterBar in the content column. Nav items live in `client/src/config/navigation.js`
 - Icons: `lucide-vue-next`

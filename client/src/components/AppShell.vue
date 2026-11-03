@@ -174,7 +174,7 @@ export default {
   position: fixed;
   inset: 0;
   z-index: var(--z-backdrop);
-  background: rgba(15, 23, 42, 0.32);
+  background: rgba(26, 26, 26, 0.32);
 }
 
 .skip-link {

@@ -227,7 +227,7 @@ export default {
 .budget-label {
   display: block;
   margin-bottom: 0.75rem;
-  color: #0f172a;
+  color: var(--color-text);
   font-size: 0.938rem;
 }
 
@@ -239,7 +239,7 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-top: 0.25rem;
-  color: #64748b;
+  color: var(--color-text-dim);
   font-size: 0.813rem;
 }
 
@@ -250,7 +250,7 @@ export default {
 }
 
 .place-order-btn {
-  background: #0f172a;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -261,11 +261,11 @@ export default {
 }
 
 .place-order-btn:hover:not(:disabled) {
-  background: #1e293b;
+  background: var(--color-accent-hover);
 }
 
 .place-order-btn:disabled {
-  background: #cbd5e1;
+  background: var(--color-border);
   cursor: not-allowed;
 }
 
@@ -277,7 +277,7 @@ export default {
 .empty-state {
   padding: 2rem;
   text-align: center;
-  color: #64748b;
+  color: var(--color-text-dim);
 }
 
 .success-banner {
