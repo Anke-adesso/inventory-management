@@ -51,7 +51,7 @@
                 <td class="col-items">
                   <details class="items-details">
                     <summary class="items-summary">
-                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                      {{ itemsLabel(order.items.length) }}
                     </summary>
                     <div class="items-dropdown">
                       <div v-for="(item, idx) in order.items" :key="idx" class="item-entry">
@@ -203,6 +203,8 @@ export default {
 
     const formatCurrency = (value) => formatCurrencyUtil(value, currentCurrency.value)
 
+    const itemsLabel = (count) => t(count === 1 ? 'orders.itemsCountOne' : 'orders.itemsCount', { count })
+
     // Separate from loadOrders: not filter-driven, must not affect the main table or stats
     const loadRestockOrders = async () => {
       try {
@@ -220,6 +222,7 @@ export default {
     })
 
     return {
+      itemsLabel,
       t,
       loading,
       error,

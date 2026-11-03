@@ -1,7 +1,8 @@
 <template>
   <div class="dashboard">
     <div class="page-header">
-      <h2>{{ t('dashboard.title') }}</h2>
+      <h2>{{ t('dashboard.pageTitle') }}</h2>
+      <p>{{ t('dashboard.description') }}</p>
       <CodyMascot moment="greet" :size="88" class="header-cody" />
     </div>
 
@@ -145,12 +146,14 @@
           </div>
           <div class="chart-content">
             <div class="horizontal-bar-chart" v-if="categoryData.length > 0">
-              <div v-for="cat in categoryData" :key="cat.name" class="h-bar-item">
+              <div v-for="(cat, i) in categoryData" :key="cat.name" class="h-bar-item">
                 <div class="h-bar-label">{{ translateCategory(cat.name) }}</div>
-                <div class="h-bar-container">
+                <div class="h-bar-container" :ref="el => setBarTrack(el, i)">
                   <div class="h-bar" :style="{ width: (cat.value / maxCategoryValue * 100) + '%', background: cat.color }">
-                    <span class="h-bar-value">{{ selectedCurrency === 'JPY' ? formatCurrency(cat.value, selectedCurrency) : `$${(cat.value / 1000).toFixed(1)}K` }}</span>
+                    <span v-if="categoryLabelFits(cat)" class="h-bar-value">{{ categoryValueLabel(cat) }}</span>
                   </div>
+                  <!-- Bar too narrow for its label: sit just past the bar end, in normal text colour -->
+                  <span v-if="!categoryLabelFits(cat)" class="h-bar-value h-bar-value-outside">{{ categoryValueLabel(cat) }}</span>
                 </div>
               </div>
             </div>
@@ -215,14 +218,14 @@
                       @click.stop="openPOModal(item)"
                       class="po-button create"
                     >
-                      Create PO
+                      {{ t('purchaseOrder.createButton') }}
                     </button>
                     <button
                       v-else
                       @click.stop="viewPO(item)"
                       class="po-button view"
                     >
-                      View PO
+                      {{ t('purchaseOrder.viewButton') }}
                     </button>
                   </td>
                 </tr>
@@ -298,7 +301,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
@@ -306,6 +309,7 @@ import { formatCurrency } from '../utils/currency'
 import CodyMascot from '../components/CodyMascot.vue'
 import ProductDetailModal from '../components/ProductDetailModal.vue'
 import BacklogDetailModal from '../components/BacklogDetailModal.vue'
+import PurchaseOrderModal from '../components/PurchaseOrderModal.vue'
 
 export default {
   name: 'Dashboard',
@@ -313,6 +317,7 @@ export default {
     CodyMascot,
     ProductDetailModal,
     BacklogDetailModal,
+    PurchaseOrderModal,
   },
   setup() {
     const { t, currentCurrency, translateProductName, translateWarehouse } = useI18n()
@@ -447,6 +452,28 @@ export default {
 
       return Object.values(categoryMap)
     })
+
+    const categoryValueLabel = (cat) =>
+      currentCurrency.value === 'JPY' ? formatCurrency(cat.value, currentCurrency.value) : `$${(cat.value / 1000).toFixed(1)}K`
+
+    // Track width is only known at runtime, so measure the first bar track (all share one width).
+    const barTrackWidth = ref(0)
+    let barTrackObserver = null
+    const setBarTrack = (el, i) => {
+      if (i !== 0 || !el) return
+      barTrackObserver?.disconnect()
+      barTrackWidth.value = el.clientWidth
+      barTrackObserver = new ResizeObserver(() => { barTrackWidth.value = el.clientWidth })
+      barTrackObserver.observe(el)
+    }
+    onBeforeUnmount(() => barTrackObserver?.disconnect())
+
+    // Estimate label width (~8px/char at 0.813rem bold + 12px padding each side); unmeasured => assume it fits.
+    const categoryLabelFits = (cat) => {
+      if (!barTrackWidth.value) return true
+      const barPx = cat.value / maxCategoryValue.value * barTrackWidth.value
+      return barPx >= categoryValueLabel(cat).length * 8 + 24
+    }
 
     const maxCategoryValue = computed(() => {
       if (categoryData.value.length === 0) return 1
@@ -693,6 +720,9 @@ export default {
       orderHealthMetrics,
       categoryData,
       maxCategoryValue,
+      categoryValueLabel,
+      categoryLabelFits,
+      setBarTrack,
       orderTrendData,
       maxOrderCount,
       topProducts,
@@ -973,6 +1003,8 @@ export default {
 
 .h-bar-container {
   flex: 1;
+  display: flex;
+  align-items: center;
   height: 32px;
   background: var(--color-surface-3);
   border-radius: 6px;
@@ -980,6 +1012,7 @@ export default {
 }
 
 .h-bar {
+  flex-shrink: 0;
   height: 100%;
   display: flex;
   align-items: center;
@@ -992,6 +1025,12 @@ export default {
   font-size: 0.813rem;
   font-weight: 700;
   color: white;
+}
+
+.h-bar-value.h-bar-value-outside {
+  padding-left: var(--space-2);
+  color: var(--color-text);
+  white-space: nowrap;
 }
 
 .line-chart {

@@ -105,6 +105,7 @@ class BacklogItem(BaseModel):
     days_delayed: int
     priority: str
     has_purchase_order: Optional[bool] = False
+    purchase_order_id: Optional[str] = None
 
 class PurchaseOrder(BaseModel):
     id: str
@@ -290,8 +291,10 @@ def get_backlog():
     for item in backlog_items:
         item_dict = dict(item)
         # Check if this backlog item has a purchase order
-        has_po = any(po["backlog_item_id"] == item["id"] for po in purchase_orders)
-        item_dict["has_purchase_order"] = has_po
+        po = next((po for po in purchase_orders if po["backlog_item_id"] == item["id"]), None)
+        item_dict["has_purchase_order"] = po is not None
+        # The Dashboard decides between "Create PO" and "View PO" on this field.
+        item_dict["purchase_order_id"] = po["id"] if po else None
         result.append(item_dict)
     return result
 
@@ -499,6 +502,134 @@ def create_restock_order(request: CreateRestockOrderRequest):
 def get_restock_orders():
     """Get submitted restock orders, newest first"""
     return list(reversed(restock_orders))
+
+# ---- Purchase orders ---------------------------------------------------------
+# Created from backlog items on the Dashboard. Stored in the in-memory list that
+# mock_data loads from purchase_orders.json, so /api/backlog sees them too.
+purchase_orders_lock = threading.Lock()
+
+def parse_iso_date(value: str, field: str) -> str:
+    """Validate a YYYY-MM-DD date string and return it unchanged."""
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=400, detail=f"{field} must be a date in YYYY-MM-DD format")
+    return value
+
+@app.post("/api/purchase-orders", response_model=PurchaseOrder, status_code=201)
+def create_purchase_order(request: CreatePurchaseOrderRequest):
+    """Create a purchase order for a backlog item (one PO per backlog item)."""
+    if not any(item["id"] == request.backlog_item_id for item in backlog_items):
+        raise HTTPException(status_code=404, detail="Backlog item not found")
+    supplier = request.supplier_name.strip()
+    if not supplier:
+        raise HTTPException(status_code=400, detail="Supplier name is required")
+    if request.quantity <= 0:
+        raise HTTPException(status_code=400, detail="Quantity must be positive")
+    # Checked here rather than via Field constraints: NaN/Infinity in a 422 body
+    # can't be serialized to JSON (same reasoning as the restock order budget).
+    if not math.isfinite(request.unit_cost) or request.unit_cost <= 0:
+        raise HTTPException(status_code=400, detail="Unit cost must be a positive number")
+    parse_iso_date(request.expected_delivery_date, "Expected delivery date")
+
+    # Duplicate check and append under one lock, so two concurrent requests
+    # can't both create a PO for the same backlog item.
+    with purchase_orders_lock:
+        if any(po["backlog_item_id"] == request.backlog_item_id for po in purchase_orders):
+            raise HTTPException(status_code=409, detail="This backlog item already has a purchase order")
+        po = {
+            "id": f"PO-{len(purchase_orders) + 1:04d}",
+            "backlog_item_id": request.backlog_item_id,
+            "supplier_name": supplier,
+            "quantity": request.quantity,
+            "unit_cost": request.unit_cost,
+            "expected_delivery_date": request.expected_delivery_date,
+            "status": "pending",
+            "created_date": datetime.now().strftime("%Y-%m-%d"),
+            "notes": (request.notes or "").strip() or None,
+        }
+        purchase_orders.append(po)
+    return po
+
+@app.get("/api/purchase-orders/{backlog_item_id}", response_model=PurchaseOrder)
+def get_purchase_order_by_backlog_item(backlog_item_id: str):
+    """Get the purchase order belonging to a backlog item."""
+    po = next((po for po in purchase_orders if po["backlog_item_id"] == backlog_item_id), None)
+    if po is None:
+        raise HTTPException(status_code=404, detail="Purchase order not found")
+    return po
+
+# ---- Tasks -------------------------------------------------------------------
+# Field names follow the frontend's existing task shape (dueDate, status).
+# IDs are strings ("TASK-0001"): App.vue tells API tasks from the numeric-ID mock
+# tasks in useAuth by ID alone, so numeric IDs would collide with them.
+TASK_PRIORITIES = {"high", "medium", "low"}
+
+class Task(BaseModel):
+    id: str
+    title: str
+    priority: str
+    dueDate: str
+    status: str
+
+class CreateTaskRequest(BaseModel):
+    title: str
+    priority: str = "medium"
+    dueDate: str
+
+tasks: list = []
+tasks_lock = threading.Lock()
+task_sequence = 0  # monotonic, so IDs aren't reused after a delete
+
+def find_task(task_id: str) -> dict:
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
+@app.get("/api/tasks", response_model=List[Task])
+def get_tasks():
+    """Get all tasks, newest first."""
+    return list(reversed(tasks))
+
+@app.post("/api/tasks", response_model=Task, status_code=201)
+def create_task(request: CreateTaskRequest):
+    """Create a pending task."""
+    global task_sequence
+    title = request.title.strip()
+    if not title:
+        raise HTTPException(status_code=400, detail="Title is required")
+    if request.priority not in TASK_PRIORITIES:
+        raise HTTPException(status_code=400, detail="Priority must be high, medium or low")
+    parse_iso_date(request.dueDate, "Due date")
+    with tasks_lock:
+        task_sequence += 1
+        task = {
+            "id": f"TASK-{task_sequence:04d}",
+            "title": title,
+            "priority": request.priority,
+            "dueDate": request.dueDate,
+            "status": "pending",
+        }
+        tasks.append(task)
+    return task
+
+@app.patch("/api/tasks/{task_id}", response_model=Task)
+def toggle_task(task_id: str):
+    """Toggle a task between pending and completed."""
+    with tasks_lock:
+        task = find_task(task_id)
+        task["status"] = "completed" if task["status"] == "pending" else "pending"
+        return dict(task)
+
+@app.delete("/api/tasks/{task_id}", response_model=Task)
+def delete_task(task_id: str):
+    """Delete a task and return it."""
+    with tasks_lock:
+        task = find_task(task_id)
+        tasks.remove(task)
+        return task
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -26,6 +26,8 @@ export default {
   // Dashboard
   dashboard: {
     title: '概要',
+    pageTitle: 'ビジネス概要',
+    description: '主要指標、注文の状況、在庫価値を一目で確認',
     kpi: {
       title: '主要業績評価指標',
       inventoryTurnover: '在庫回転率',
@@ -125,6 +127,7 @@ export default {
     avgOrderValue: '平均注文額',
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
+    itemsCountOne: '{count}件',
     quantity: '数量',
     table: {
       orderNumber: '注文番号',
@@ -234,6 +237,7 @@ export default {
     stableDemand: '需要安定',
     decreasingDemand: '需要減少',
     itemsCount: '{count}件',
+    itemsCountOne: '{count}件',
     more: 'さらに...',
     demandForecasts: '需要予測',
     table: {
@@ -352,6 +356,49 @@ export default {
     joinDate: '入社日',
     employeeId: '社員ID',
     close: '閉じる'
+  },
+
+  // Purchase Order Modal
+  purchaseOrder: {
+    createTitle: '発注書を作成',
+    viewTitle: '発注書',
+    createButton: '発注書作成',
+    viewButton: '発注書を表示',
+    order: '注文',
+    sku: 'SKU',
+    shortage: '不足数',
+    units: '{count}個',
+    poNumber: '発注番号',
+    status: 'ステータス',
+    supplier: '仕入先名',
+    quantity: '数量',
+    unitCost: '単価',
+    unitCostUsd: '単価（USD）',
+    total: '合計',
+    createdDate: '作成日',
+    expectedDelivery: '納品予定日',
+    notes: '備考',
+    optional: '任意',
+    submit: '発注書を作成',
+    submitting: '作成中...',
+    close: '閉じる',
+    loading: '発注書を読み込み中...',
+    statuses: {
+      pending: '保留中',
+      ordered: '発注済み',
+      shipped: '出荷済み',
+      delivered: '納品済み',
+      received: '受領済み',
+      cancelled: 'キャンセル'
+    },
+    errors: {
+      supplierRequired: '仕入先名は必須です',
+      quantityPositive: '0より大きい整数を入力してください',
+      unitCostPositive: '0より大きい単価を入力してください',
+      dateRequired: '納品予定日を選択してください',
+      generic: '発注書を作成できませんでした。もう一度お試しください。',
+      loadFailed: '発注書を読み込めませんでした。'
+    }
   },
 
   // Tasks Modal

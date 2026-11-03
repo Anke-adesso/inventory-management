@@ -26,6 +26,8 @@ export default {
   // Dashboard
   dashboard: {
     title: 'Overview',
+    pageTitle: 'Business Overview',
+    description: 'Key metrics, order health and inventory value at a glance',
     kpi: {
       title: 'Key Performance Indicators',
       inventoryTurnover: 'Inventory Turnover Rate',
@@ -125,6 +127,7 @@ export default {
     avgOrderValue: 'Avg Order Value',
     onTimeDelivery: 'On-Time Delivery',
     itemsCount: '{count} items',
+    itemsCountOne: '{count} item',
     quantity: 'Qty',
     table: {
       orderNumber: 'Order Number',
@@ -234,6 +237,7 @@ export default {
     stableDemand: 'Stable Demand',
     decreasingDemand: 'Decreasing Demand',
     itemsCount: '{count} items',
+    itemsCountOne: '{count} item',
     more: 'more...',
     demandForecasts: 'Demand Forecasts',
     table: {
@@ -352,6 +356,49 @@ export default {
     joinDate: 'Join Date',
     employeeId: 'Employee ID',
     close: 'Close'
+  },
+
+  // Purchase Order Modal
+  purchaseOrder: {
+    createTitle: 'Create Purchase Order',
+    viewTitle: 'Purchase Order',
+    createButton: 'Create PO',
+    viewButton: 'View PO',
+    order: 'Order',
+    sku: 'SKU',
+    shortage: 'Shortage',
+    units: '{count} units',
+    poNumber: 'PO Number',
+    status: 'Status',
+    supplier: 'Supplier Name',
+    quantity: 'Quantity',
+    unitCost: 'Unit Cost',
+    unitCostUsd: 'Unit Cost (USD)',
+    total: 'Total',
+    createdDate: 'Created',
+    expectedDelivery: 'Expected Delivery',
+    notes: 'Notes',
+    optional: 'optional',
+    submit: 'Create Purchase Order',
+    submitting: 'Creating...',
+    close: 'Close',
+    loading: 'Loading purchase order...',
+    statuses: {
+      pending: 'Pending',
+      ordered: 'Ordered',
+      shipped: 'Shipped',
+      delivered: 'Delivered',
+      received: 'Received',
+      cancelled: 'Cancelled'
+    },
+    errors: {
+      supplierRequired: 'Supplier name is required',
+      quantityPositive: 'Enter a whole number greater than 0',
+      unitCostPositive: 'Enter a unit cost greater than 0',
+      dateRequired: 'Select an expected delivery date',
+      generic: 'Could not create the purchase order. Please try again.',
+      loadFailed: 'Could not load the purchase order.'
+    }
   },
 
   // Tasks Modal
