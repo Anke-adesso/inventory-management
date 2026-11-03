@@ -100,7 +100,10 @@ uv run --project ../server pytest -v   # tests/ has no own project; deps live in
 Detailed per-side guidance lives in `client/CLAUDE.md` and `server/CLAUDE.md` - keep it there, not here.
 
 ## Design System
-- Colors: Slate/gray (#0f172a, #64748b, #e2e8f0)
+- Tokens: `client/src/styles/theme.css` is the single source for color, spacing, radius, shadow and type (`--color-*`, `--space-*`, ...). Use tokens, not hex values, in new or touched styles
+- Colors: Slate/gray neutrals (#0f172a, #64748b, #e2e8f0) with a mauve accent (#8E4A55) for active nav, primary buttons, links and focus
 - Status: green/blue/yellow/red
+- Layout: left sidebar (collapsible to icons-only, drawer on mobile), slim top bar, sticky FilterBar in the content column. Nav items live in `client/src/config/navigation.js`
+- Icons: `lucide-vue-next`
 - Charts: Custom SVG, CSS Grid for layouts
 - No emojis in UI

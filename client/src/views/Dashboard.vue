@@ -727,13 +727,6 @@ export default {
 </script>
 
 <style scoped>
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
 .header-meta {
   font-size: 0.813rem;
   color: #64748b;

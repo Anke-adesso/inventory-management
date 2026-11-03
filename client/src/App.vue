@@ -1,60 +1,33 @@
 <template>
-  <div class="app">
-    <header class="top-nav">
-      <div class="nav-container">
-        <div class="logo">
-          <h1>{{ t('nav.companyName') }}</h1>
-          <span class="subtitle">{{ t('nav.subtitle') }}</span>
-        </div>
-        <nav class="nav-tabs">
-          <router-link to="/" :class="{ active: $route.path === '/' }">
-            {{ t('nav.overview') }}
-          </router-link>
-          <router-link to="/inventory" :class="{ active: $route.path === '/inventory' }">
-            {{ t('nav.inventory') }}
-          </router-link>
-          <router-link to="/orders" :class="{ active: $route.path === '/orders' }">
-            {{ t('nav.orders') }}
-          </router-link>
-          <router-link to="/spending" :class="{ active: $route.path === '/spending' }">
-            {{ t('nav.finance') }}
-          </router-link>
-          <router-link to="/demand" :class="{ active: $route.path === '/demand' }">
-            {{ t('nav.demandForecast') }}
-          </router-link>
-          <router-link to="/restocking" :class="{ active: $route.path === '/restocking' }">
-            {{ t('nav.restocking') }}
-          </router-link>
-          <router-link to="/reports" :class="{ active: $route.path === '/reports' }">
-            Reports
-          </router-link>
-        </nav>
-        <LanguageSwitcher />
-        <ProfileMenu
-          @show-profile-details="showProfileDetails = true"
-          @show-tasks="showTasks = true"
-        />
-      </div>
-    </header>
-    <FilterBar />
-    <main class="main-content">
-      <router-view />
-    </main>
+  <AppShell>
+    <template #topbar>
+      <LanguageSwitcher />
+      <ProfileMenu
+        @show-profile-details="showProfileDetails = true"
+        @show-tasks="showTasks = true"
+      />
+    </template>
 
-    <ProfileDetailsModal
-      :is-open="showProfileDetails"
-      @close="showProfileDetails = false"
-    />
+    <template #toolbar>
+      <FilterBar />
+    </template>
 
-    <TasksModal
-      :is-open="showTasks"
-      :tasks="tasks"
-      @close="showTasks = false"
-      @add-task="addTask"
-      @delete-task="deleteTask"
-      @toggle-task="toggleTask"
-    />
-  </div>
+    <router-view />
+  </AppShell>
+
+  <ProfileDetailsModal
+    :is-open="showProfileDetails"
+    @close="showProfileDetails = false"
+  />
+
+  <TasksModal
+    :is-open="showTasks"
+    :tasks="tasks"
+    @close="showTasks = false"
+    @add-task="addTask"
+    @delete-task="deleteTask"
+    @toggle-task="toggleTask"
+  />
 </template>
 
 <script>
@@ -62,6 +35,7 @@ import { ref, onMounted, computed } from 'vue'
 import { api } from './api'
 import { useAuth } from './composables/useAuth'
 import { useI18n } from './composables/useI18n'
+import AppShell from './components/AppShell.vue'
 import FilterBar from './components/FilterBar.vue'
 import ProfileMenu from './components/ProfileMenu.vue'
 import ProfileDetailsModal from './components/ProfileDetailsModal.vue'
@@ -71,6 +45,7 @@ import LanguageSwitcher from './components/LanguageSwitcher.vue'
 export default {
   name: 'App',
   components: {
+    AppShell,
     FilterBar,
     ProfileMenu,
     ProfileDetailsModal,
@@ -165,211 +140,121 @@ export default {
 </script>
 
 <style>
+/* Global base (box-sizing, body, height chain, focus ring) lives in styles/theme.css. */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: #f8fafc;
-  color: #1e293b;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.top-nav {
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  padding: 0 2rem;
-  height: 70px;
-}
-
-.nav-container > .nav-tabs {
-  margin-left: auto;
-  margin-right: 1rem;
-}
-
-.nav-container > .language-switcher {
-  margin-right: 1rem;
-}
-
-.logo {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-}
-
-.logo h1 {
-  font-size: 1.375rem;
-  font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.025em;
-}
-
-.subtitle {
-  font-size: 0.813rem;
-  color: #64748b;
-  font-weight: 400;
-  padding-left: 0.75rem;
-  border-left: 1px solid #e2e8f0;
-}
-
-.nav-tabs {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.nav-tabs a {
-  padding: 0.625rem 1.25rem;
-  color: #64748b;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.938rem;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.nav-tabs a:hover {
-  color: #0f172a;
-  background: #f1f5f9;
-}
-
-.nav-tabs a.active {
-  color: #2563eb;
-  background: #eff6ff;
-}
-
-.nav-tabs a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #2563eb;
-}
-
-.main-content {
-  flex: 1;
-  max-width: 1600px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem 2rem;
-}
-
+/* ---- Page header (shared by every routed view) ------------------------- */
 .page-header {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .page-header h2 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 0.375rem;
-  letter-spacing: -0.025em;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-xl);
+  line-height: 28px;
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .page-header p {
-  color: #64748b;
-  font-size: 0.938rem;
+  flex-basis: 100%;
+  order: 3;
+  color: var(--color-text-mid);
+  font-size: var(--text-sm);
+  line-height: 20px;
 }
 
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+/* ---- Stats ------------------------------------------------------------- */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .stat-card {
-  background: white;
-  padding: 1.25rem;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
+  background: var(--color-surface);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-2);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
 
 .stat-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-label {
-  color: #64748b;
-  font-size: 0.875rem;
-  font-weight: 600;
+  color: var(--color-text-mid);
+  font-size: var(--text-xs);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.625rem;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-2);
 }
 
 .stat-value {
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.025em;
+  font-size: var(--text-2xl);
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
 }
 
-.stat-card.warning .stat-value {
-  color: #ea580c;
-}
+.stat-card.warning .stat-value { color: var(--color-warning); }
+.stat-card.success .stat-value { color: var(--color-success); }
+.stat-card.danger .stat-value { color: var(--color-danger); }
+.stat-card.info .stat-value { color: var(--color-info); }
 
-.stat-card.success .stat-value {
-  color: #059669;
-}
-
-.stat-card.danger .stat-value {
-  color: #dc2626;
-}
-
-.stat-card.info .stat-value {
-  color: #2563eb;
-}
-
+/* ---- Cards ------------------------------------------------------------- */
 .card {
-  background: white;
-  border-radius: 10px;
-  padding: 1.25rem;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 1.25rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border-2);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.875rem;
-  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-2);
 }
 
 .card-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.025em;
+  font-size: var(--text-lg);
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--color-text);
 }
 
+@media (max-width: 767px) {
+  .card { padding: var(--space-4); }
+}
+
+/* ---- Tables ------------------------------------------------------------ */
 .table-container {
   overflow-x: auto;
 }
@@ -377,113 +262,103 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
 }
 
 thead {
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--color-surface-3);
+  border-top: 1px solid var(--color-border-2);
+  border-bottom: 1px solid var(--color-border-2);
 }
 
 th {
   text-align: left;
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-3);
   font-weight: 600;
-  color: #475569;
-  font-size: 0.75rem;
+  color: var(--color-text-mid);
+  font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 td {
-  padding: 0.5rem 0.75rem;
-  border-top: 1px solid #f1f5f9;
-  color: #334155;
-  font-size: 0.875rem;
+  height: 44px;
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+}
+
+td strong {
+  white-space: nowrap;
 }
 
 tbody tr {
-  transition: background-color 0.15s ease;
+  transition: background-color var(--dur-fast);
 }
 
 tbody tr:hover {
-  background: #f8fafc;
+  background: var(--color-surface-2);
 }
 
+/* ---- Badges ------------------------------------------------------------ */
 .badge {
   display: inline-block;
-  padding: 0.313rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.025em;
+  white-space: nowrap;
 }
 
-.badge.success {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.badge.warning {
-  background: #fed7aa;
-  color: #92400e;
-}
-
-.badge.danger {
-  background: #fecaca;
-  color: #991b1b;
-}
-
-.badge.info {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
+.badge.success,
 .badge.increasing {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-success-bg);
+  color: var(--color-success);
 }
 
-.badge.decreasing {
-  background: #fecaca;
-  color: #991b1b;
+.badge.warning,
+.badge.medium {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge.danger,
+.badge.decreasing,
+.badge.high {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.badge.info,
+.badge.low {
+  background: var(--color-info-bg);
+  color: var(--color-info);
 }
 
 .badge.stable {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: var(--color-surface-2);
+  color: var(--color-text-mid);
 }
 
-.badge.high {
-  background: #fecaca;
-  color: #991b1b;
-}
-
-.badge.medium {
-  background: #fed7aa;
-  color: #92400e;
-}
-
-.badge.low {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
+/* ---- States ------------------------------------------------------------ */
 .loading {
   text-align: center;
-  padding: 3rem;
-  color: #64748b;
-  font-size: 0.938rem;
+  padding: var(--space-12);
+  color: var(--color-text-mid);
+  font-size: var(--text-base);
 }
 
 .error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  padding: 1rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-  font-size: 0.938rem;
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
+  color: var(--color-danger);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin: var(--space-4) 0;
+  font-size: var(--text-base);
 }
 </style>
