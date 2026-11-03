@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -126,6 +127,51 @@ export default {
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
+    },
+    submittedOrders: {
+      title: 'Submitted Orders',
+      empty: 'No restocking orders have been submitted yet.',
+      goToRestocking: 'Go to Restocking',
+      loadFailed: 'Failed to load submitted orders',
+      days: '{count} days',
+      table: {
+        orderNumber: 'Order Number',
+        submittedDate: 'Submitted',
+        items: 'Items',
+        totalCost: 'Total Cost',
+        leadTime: 'Lead Time',
+        expectedDelivery: 'Expected Delivery',
+        status: 'Status'
+      }
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Allocate a budget across forecasted demand and place a restocking order',
+    budget: 'Budget',
+    allocated: 'Allocated',
+    remaining: 'Remaining',
+    items: 'Items',
+    recommendations: 'Recommendations',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    partial: 'Partial',
+    empty: 'No items can be funded at this budget. Increase the budget to see recommendations.',
+    success: 'Order {orderNumber} submitted successfully.',
+    viewOrders: 'View orders',
+    loadFailed: 'Failed to load recommendations',
+    days: '{count} days',
+    table: {
+      sku: 'SKU',
+      name: 'Product',
+      trend: 'Trend',
+      forecastedDemand: 'Forecasted Demand',
+      unitCost: 'Unit Cost',
+      recommendedQty: 'Recommended Qty',
+      lineCost: 'Line Cost',
+      leadTime: 'Lead Time'
     }
   },
 
@@ -204,6 +250,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'

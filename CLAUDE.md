@@ -47,7 +47,7 @@ npm install && npm run dev
 
 ```bash
 cd tests
-uv run pytest -v
+uv run --project ../server pytest -v   # tests/ has no own project; deps live in server/
 ```
 
 - Backend only: pytest + FastAPI TestClient in `tests/backend/`

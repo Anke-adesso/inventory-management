@@ -75,6 +75,48 @@
         </div>
       </div>
     </div>
+
+    <div class="card submitted-card">
+      <div class="card-header">
+        <h3 class="card-title">{{ t('orders.submittedOrders.title') }} ({{ restockOrders.length }})</h3>
+      </div>
+      <div v-if="restockError" class="error">{{ restockError }}</div>
+      <div v-else-if="restockLoading" class="loading">{{ t('common.loading') }}</div>
+      <div v-else-if="restockOrders.length === 0" class="empty-state">
+        {{ t('orders.submittedOrders.empty') }}
+        <router-link to="/restocking">{{ t('orders.submittedOrders.goToRestocking') }}</router-link>
+      </div>
+      <div v-else class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ t('orders.submittedOrders.table.orderNumber') }}</th>
+              <th>{{ t('orders.submittedOrders.table.submittedDate') }}</th>
+              <th>{{ t('orders.submittedOrders.table.items') }}</th>
+              <th>{{ t('orders.submittedOrders.table.totalCost') }}</th>
+              <th>{{ t('orders.submittedOrders.table.leadTime') }}</th>
+              <th>{{ t('orders.submittedOrders.table.expectedDelivery') }}</th>
+              <th>{{ t('orders.submittedOrders.table.status') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ro in restockOrders" :key="ro.id">
+              <td><strong>{{ ro.order_number }}</strong></td>
+              <td>{{ formatDate(ro.submitted_date) }}</td>
+              <td>
+                <div v-for="item in ro.items" :key="item.sku">{{ item.sku }} × {{ item.quantity }}</div>
+              </td>
+              <td><strong>{{ formatCurrency(ro.total_cost) }}</strong></td>
+              <td>{{ t('orders.submittedOrders.days', { count: ro.lead_time_days }) }}</td>
+              <td>{{ formatDate(ro.expected_delivery) }}</td>
+              <td>
+                <span class="badge info">{{ t(`status.${ro.status.toLowerCase()}`) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,6 +125,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrency as formatCurrencyUtil } from '../utils/currency'
 
 export default {
   name: 'Orders',
@@ -95,6 +138,9 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockOrders = ref([])
+    const restockLoading = ref(true)
+    const restockError = ref(null)
 
     // Use shared filters
     const {
@@ -144,22 +190,44 @@ export default {
     }
 
     const formatDate = (dateString) => {
+      const d = new Date(dateString)
+      if (!dateString || isNaN(d.getTime())) return '-'
       const { currentLocale } = useI18n()
       const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
-      return new Date(dateString).toLocaleDateString(locale, {
+      return d.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
       })
     }
 
-    onMounted(loadOrders)
+    const formatCurrency = (value) => formatCurrencyUtil(value, currentCurrency.value)
+
+    // Separate from loadOrders: not filter-driven, must not affect the main table or stats
+    const loadRestockOrders = async () => {
+      try {
+        restockOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        restockError.value = t('orders.submittedOrders.loadFailed') + ': ' + (err.response?.data?.detail || err.message)
+      } finally {
+        restockLoading.value = false
+      }
+    }
+
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockOrders,
+      restockLoading,
+      restockError,
+      formatCurrency,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -172,6 +240,21 @@ export default {
 </script>
 
 <style scoped>
+.submitted-card {
+  margin-top: 1.5rem;
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.empty-state a {
+  margin-left: 0.5rem;
+  color: #3b82f6;
+}
+
 /* Fixed table layout to prevent column shifting */
 .orders-table {
   table-layout: fixed;
